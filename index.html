@@ -7,7 +7,7 @@
     <meta name="description" content="Bootstrap UI components for AngularJS apps using Closure Compiler, no jQuery dependencies">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="css/abc.css">
+    <link rel="stylesheet" href="dist/css/abc.css">
     <style>
 .slider-demo {
     padding-top: 30px;
@@ -28,9 +28,9 @@
     <abc-slider class="weighting" ng-init="sliderVal2 = 18" ng-model="sliderVal2" min="5" max="20" step=".5"></abc-slider>
 </div>
 
-<script src="js/vendor.js"></script>
+<script src="dist/js/vendor.js"></script>
 
-<script src="js/abc.js"></script>
+<script src="dist/js/abc.js"></script>
 <script>
     angular.module('abc').controller('DemoController', function($scope) {
        this.sliderVal = 6;

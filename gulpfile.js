@@ -257,6 +257,7 @@ gulp.task('build', ['jshint', 'closure', 'html', 'extras'], function () {
 
 gulp.task('gh-pages', ['build'], function() {
     return gulp.src('dist/index.html', { dot: true })
+        .pipe($.replace(/"(css|js)\//g, '"dist/$1/'))
         .pipe(gulp.dest('.'));
 });
 
