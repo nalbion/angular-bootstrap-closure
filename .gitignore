@@ -1,3 +1,4 @@
 .tmp
 angular-bootstrap-closure.iml
 node_modules
+bower_components

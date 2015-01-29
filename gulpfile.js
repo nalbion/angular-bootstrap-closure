@@ -249,6 +249,11 @@ gulp.task('build', ['jshint', 'closure', 'html', 'extras'], function () {
         .pipe($.size({title: 'build', gzip: true}));
 });
 
+gulp.task('gh-pages', ['build'], function() {
+    return gulp.src('dist/index.html', { dot: true })
+        .pipe(gulp.dest('.'));
+});
+
 gulp.task('default', ['clean'], function () {
     gulp.start('build');
 });
