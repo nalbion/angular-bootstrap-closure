@@ -1,0 +1,51 @@
+{
+  "name": "angular-bootstrap-closure",
+  "version": "0.0.1",
+  "description": "Bootstrap UI components for AngularJS apps using Closure Compiler, no jQuery dependencies",
+  "keywords": [
+    "AngularJS",
+    "Closure Compiler",
+    "Bootstrap"
+  ],
+  "author": "Nicholas Albion",
+  "license": "BSD-2-Clause",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nalbion/angular-bootstrap-closure.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nalbion/angular-bootstrap-closure/issues"
+  },
+  "devDependencies": {
+    "gulp": "^3.6.0",
+    "del": "^0.1.0",
+    "gulp-load-plugins": "^0.7.1",
+    "gulp-plumber": "^0.6.3",
+    "gulp-if": "^1.2.1",
+    "yargs": "~1.3.3",
+    "gulp-jshint": "^1.5.3",
+    "jshint-stylish": "^1.0.0",
+    "connect": "^3.0.1",
+    "connect-livereload": "^0.5.0",
+    "gulp-livereload": "^2.0.0",
+    "serve-index": "^1.1.4",
+    "serve-static": "^1.4.0",
+    "opn": "^1.0.0",
+    "gulp-less": "~2.0.1",
+    "less-plugin-autoprefix": "~1.1.0",
+    "gulp-angular-templatecache": "~1.5.0",
+    "gulp-sourcemaps": "~1.3.0",
+    "gulp-closure-compiler": "~0.2.14",
+    "gulp-closure-deps": "~0.4.0",
+    "gulp-replace": "^0.4.0",
+    "gulp-rename": "~1.2.0",
+    "gulp-rev": "~2.0.1",
+    "gulp-rev-replace": "~0.3.1",
+    "gulp-size": "~1.2.0",
+    "gulp-useref": "~1.1.1"
+  }
+}

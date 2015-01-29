@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html class="no-js" ng-app="abc">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Angular Bootstrap Closure Demo</title>
+    <meta name="description" content="Bootstrap UI components for AngularJS apps using Closure Compiler, no jQuery dependencies">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- build:css css/abc.css -->
+    <link rel="stylesheet" href="css/abc.css">
+    <!-- endbuild -->
+    <style>
+.slider-demo {
+    padding-top: 30px;
+}
+    </style>
+</head>
+<body ng-controller="DemoController as demo">
+
+<div class="slider-demo">
+    <input type="range" class="ui-slider weighting" ng-model="demo.sliderVal" max="10"/>
+</div>
+
+<div class="slider-demo">
+    <abc-slider class="weighting" ng-model="demo.sliderVal" max="10"></abc-slider>
+</div>
+
+<div class="slider-demo">
+    <abc-slider class="weighting" ng-init="sliderVal2 = 18" ng-model="sliderVal2" min="5" max="20" step=".5"></abc-slider>
+</div>
+
+<!-- build:js js/vendor.js -->
+<script src="../bower_components/angularjs/angular.js"></script>
+<script src="../bower_components/closure-library/index.js"></script>
+<!-- endbuild -->
+
+<script src="js/abc.js"></script>
+<script>
+    angular.module('abc').controller('DemoController', function($scope) {
+       this.sliderVal = 6;
+       $scope.sliderVal = 2;
+    });
+</script>
+</body>
+</html>
+

@@ -1,0 +1,11 @@
+<div class="ui-slider-group">
+    <div class="ui-slider" ng-keydown="onKeydown($event)"
+        tabindex="0" role="slider" aria-valuemin="{{min}}" aria-valuemax="{{max}}" aria-valuenow="{{value}}">
+        <div class="tooltip {{tipPlacement}}" ng-class="{ in: isTipOpen, fade: tipAnimation }"
+             ng-style="{left: left + '%'}">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner" ng-bind="value"></div>
+        </div>
+        <span class="ui-slider-handle" ng-style="{left: left + '%'}"></span>
+    </div>
+</div>
