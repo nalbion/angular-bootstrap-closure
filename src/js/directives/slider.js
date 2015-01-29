@@ -40,7 +40,13 @@ abc.sliderLink = function (scope, element, attrs, ctrls) {
         sliderCtrl.init( ngModelCtrl, element );
         ngModelCtrl.$render();
     }
+};
 
+and.sliderTipDirective = function () {
+    return {
+        restrict: 'A',
+        template: ''
+    };
 };
 
 /**
@@ -181,4 +187,5 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
 
 abc.sliderModule = angular.module('abc.slider', []) //, ['ui.bootstrap.tooltip'])
     .controller('SliderController', abc.SliderCtrl)
-    .directive('abcSlider', abc.sliderDirective);
+    .directive('abcSlider', abc.sliderDirective)
+    .directive('abcSliderTip', and.sliderTipDirective));
