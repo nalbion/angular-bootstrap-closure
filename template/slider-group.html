@@ -1,0 +1,9 @@
+<!--<div class="ui-slider-group">-->
+    <div ng-if="tooltip" class="tooltip top fade in" ng-class="{in: isTipOpen}"
+         ng-style="{left: left + '%'}">
+        <div class="tooltip-arrow"></div>
+        <div class="tooltip-inner" ng-bind="value"></div>
+    </div>
+    <ng-transclude></ng-transclude>
+    <p ng-if="legend" class="hint">{{hint}}</p>
+<!--</div>-->

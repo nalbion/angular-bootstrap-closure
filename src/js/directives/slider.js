@@ -3,7 +3,18 @@
  */
 goog.provide('abc.sliderModule');
 
-abc.sliderDirective = function () {
+/**
+ * As per the <a href="https://developer.mozilla.org/en/docs/Web/HTML/Element/Input">HTML5 &lt;input type="range"></a>
+ * control, defaults to:
+ *  min: 0
+ *  max: 100
+ *  step: 1
+ *  value: average of min & max
+ *
+ * @returns angular.Directive
+ * @ngInject
+ */
+abc.sliderDirectiveFactory = function () {
     return {
         restrict: 'EA',
         replace: true,
@@ -16,24 +27,47 @@ abc.sliderDirective = function () {
         scope: {
             min: '@',
             max: '@',
-            step: '@'
+            step: '@',
+            tooltip: '@',
+            legend: '&'
             //list: '@'
             //onHover: '&',
             //onLeave: '&'
             //handleStyle: '='
         },
+        // create the linking function
+        //compile: function compile(tElement, tAttrs, transclude) {
+        //    return {
+        //        pre: function preLink(scope, iElement, iAttrs, controller) { ... },
+        //        post: function postLink(scope, iElement, iAttrs, controller) { ... }
+        //    }
+        //    // or
+        //    // return function postLink( ... ) { ... }
+        //},
+
+        //templateUrl: abc.sliderTemplateUrl,
         templateUrl: 'template/slider.html',
-        link: abc.sliderLink         // interact with controllers listed in 'require'
+        link: abc.sliderPostLink         // interact with controllers listed in 'require'
     };
 };
 
 /**
+ * @param {!angular.JQLite=} element
+ * @param {!angular.Attributes=} attrs
+ */
+abc.sliderTemplateUrl = function (element, attrs) {
+    return 'template/slider.html';
+};
+
+/**
+ * Attach the data ($scope) to the linking function and it should return the linked html
+ *
  * @param {!angular.Scope=} scope
  * @param {!angular.JQLite=} element
  * @param {!angular.Attributes=} attrs
  * @param {!Array.<!Object>=} ctrls - [abc.SliderCtrl, angular.NgModelController]
  */
-abc.sliderLink = function (scope, element, attrs, ctrls) {
+abc.sliderPostLink = function (scope, element, attrs, ctrls) {
     var sliderCtrl = ctrls[0], ngModelCtrl = ctrls[1];
 
     if ( ngModelCtrl ) {
@@ -42,10 +76,15 @@ abc.sliderLink = function (scope, element, attrs, ctrls) {
     }
 };
 
-and.sliderTipDirective = function () {
+abc.abcSliderGroupDirectiveFactory = function () {
     return {
-        restrict: 'A',
-        template: ''
+        restrict: 'C',
+        scope: {
+            tooltip: '@',
+            legend: '@'
+        },
+        transclude: true,
+        templateUrl: 'template/slider-group.html'
     };
 };
 
@@ -57,14 +96,38 @@ and.sliderTipDirective = function () {
  * @param {Window} $window
  * @ngInject
  */
-abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
+abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { //, $compile) {
     var ngModelCtrl = {}, // $setViewValue: angular.noop };
         min = parseInt($attrs.min, 10) || 0,
         max = parseInt($attrs.max, 10) || 100,
         step = parseFloat($attrs.step) || 1;
 
-    $scope['tipPlacement'] = 'top';
-    $scope['tipAnimation'] = true;
+    //$scope['tipPlacement'] = 'top';
+    //$scope['tipAnimation'] = true;
+    //$scope['tooltip'] = !!$attrs.tooltip;
+    //$scope['hint'] = $attrs.legend;
+    //$scope['hint'] = $scope.$eval($attrs.legend);
+
+    //$scope['hint'] = $compile($attrs.legend)($scope);
+    var legend = $scope.legend();
+    //if (legend) {
+    //    $scope.$watch('value', //debounce(
+    //                            function (value) {
+    //                                if (value !== undefined) {
+    //                                    var label;
+    //                                    for (var i in legend) {
+    //                                        i = parseInt(i);
+    //                                        if (i > value) {
+    //                                            break;
+    //                                        }
+    //                                        label = legend[i];
+    //                                    }
+    //
+    //                                    $scope['hint'] = label;
+    //                                }
+    //                                //}, 1000));
+    //                            });
+    //}
 
 
     /**
@@ -74,6 +137,8 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
     this.init = function(ngModelCtrl_, element) {
         ngModelCtrl = ngModelCtrl_;
         ngModelCtrl.$render = this.render;
+
+
 
         console.info('initial model value: ', ngModelCtrl.$modelValue);
         console.info('initial view value: ', ngModelCtrl.$viewValue);
@@ -155,6 +220,18 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
         if ( /*!$scope.readonly &&*/ value >= min && value <= max && value != ngModelCtrl.$viewValue ) {
             value = Math.round(value / step) * step;
             $scope.updateLeft(value);
+            $scope.value = value;
+
+            var label;
+            for (var i in legend) {
+                i = parseInt(i);
+                if (i > value) {
+                    break;
+                }
+                label = legend[i];
+            }
+            $scope['hint'] = label;
+
             ngModelCtrl.$setViewValue(value);
         }
     };
@@ -185,7 +262,19 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
     };
 };
 
-abc.sliderModule = angular.module('abc.slider', []) //, ['ui.bootstrap.tooltip'])
+abc.sliderModule = angular.module('abc.slider', [])
     .controller('SliderController', abc.SliderCtrl)
-    .directive('abcSlider', abc.sliderDirective)
-    .directive('abcSliderTip', and.sliderTipDirective));
+    .directive('abcSlider', abc.sliderDirectiveFactory)
+    .directive('abcSliderGroup', abc.abcSliderGroupDirectiveFactory)
+    //.directive('abcSliderTip', abc.sliderTipDirective)
+    //.factory('debounce', function($timeout) {
+    //    return function(callback, interval) {
+    //        var timeout = null;
+    //        return function() {
+    //            $timeout.cancel(timeout);
+    //            timeout = $timeout(callback, interval);
+    //        };
+    //    };
+    //});
+;
+
