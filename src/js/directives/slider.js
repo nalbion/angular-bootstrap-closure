@@ -109,7 +109,7 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { 
     //$scope['hint'] = $scope.$eval($attrs.legend);
 
     //$scope['hint'] = $compile($attrs.legend)($scope);
-    var legend = $scope.legend();
+    var legend = $scope['legend']();
     //if (legend) {
     //    $scope.$watch('value', //debounce(
     //                            function (value) {
@@ -205,7 +205,7 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { 
      */
     this.render = function() {
         if (isNaN(ngModelCtrl.$viewValue) ) {return;}
-        var value = parseFloat(ngModelCtrl.$viewValue, 10);
+        var value = parseFloat(ngModelCtrl.$viewValue);
         $scope.updateLeft(value);
         $scope.value = value;
     };
@@ -224,7 +224,7 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { 
 
             var label;
             for (var i in legend) {
-                i = parseInt(i);
+                i = parseInt(i, 10);
                 if (i > value) {
                     break;
                 }
