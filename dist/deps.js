@@ -2,4 +2,4 @@
 // Please do not edit.
 goog.addDependency('js/templates.js', ['abc.templates'], [], false);
 goog.addDependency('js/directives/slider.js', ['abc.sliderModule'], [], false);
-goog.addDependency('js/main.js', ['abc.module'], ['abc.sliderModule', 'abc.templates'], false);
+goog.addDependency('js/main.js', ['abc.module'], ['abc.sliderModule'], false);
