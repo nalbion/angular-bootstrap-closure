@@ -23,28 +23,13 @@ abc.sliderDirectiveFactory = function () {
         // @: one-way 'text' binding
         // =: two-way direct model binding
         // &: method binding
-        //scope: { title: '@', content: '@', 'placement': '@', animation: '&', 'isOpen': '&' },
         scope: {
             min: '@',
             max: '@',
             step: '@',
             tooltip: '@',
             legend: '&'
-            //list: '@'
-            //onHover: '&',
-            //onLeave: '&'
-            //handleStyle: '='
         },
-        // create the linking function
-        //compile: function compile(tElement, tAttrs, transclude) {
-        //    return {
-        //        pre: function preLink(scope, iElement, iAttrs, controller) { ... },
-        //        post: function postLink(scope, iElement, iAttrs, controller) { ... }
-        //    }
-        //    // or
-        //    // return function postLink( ... ) { ... }
-        //},
-
         //templateUrl: abc.sliderTemplateUrl,
         templateUrl: 'template/slider.html',
         link: abc.sliderPostLink         // interact with controllers listed in 'require'
@@ -70,10 +55,8 @@ abc.sliderTemplateUrl = function (element, attrs) {
 abc.sliderPostLink = function (scope, element, attrs, ctrls) {
     var sliderCtrl = ctrls[0], ngModelCtrl = ctrls[1];
 
-    if ( ngModelCtrl ) {
-        sliderCtrl.init( ngModelCtrl, element );
-        ngModelCtrl.$render();
-    }
+    sliderCtrl.init( ngModelCtrl, element );
+    ngModelCtrl.$render();
 };
 
 abc.abcSliderGroupDirectiveFactory = function () {
@@ -94,41 +77,33 @@ abc.abcSliderGroupDirectiveFactory = function () {
  * @param {angular.Scope} $scope
  * @param {Object.<string,string>} $attrs
  * @param {Window} $window
+ * @param {angular.$timeout} $timeout
  * @ngInject
  */
-abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { //, $compile) {
+abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
     var ngModelCtrl = {}, // $setViewValue: angular.noop };
         min = parseInt($attrs.min, 10) || 0,
         max = parseInt($attrs.max, 10) || 100,
         step = parseFloat($attrs.step) || 1;
 
-    //$scope['tipPlacement'] = 'top';
-    //$scope['tipAnimation'] = true;
-    //$scope['tooltip'] = !!$attrs.tooltip;
-    //$scope['hint'] = $attrs.legend;
-    //$scope['hint'] = $scope.$eval($attrs.legend);
-
-    //$scope['hint'] = $compile($attrs.legend)($scope);
+    ///** @type {angular.Scope} */
+    //this.scope = $scope;
+    /** @type {Object<number, string>} */
     var legend = $scope.legend();
-    //if (legend) {
-    //    $scope.$watch('value', //debounce(
-    //                            function (value) {
-    //                                if (value !== undefined) {
-    //                                    var label;
-    //                                    for (var i in legend) {
-    //                                        i = parseInt(i);
-    //                                        if (i > value) {
-    //                                            break;
-    //                                        }
-    //                                        label = legend[i];
-    //                                    }
-    //
-    //                                    $scope['hint'] = label;
-    //                                }
-    //                                //}, 1000));
-    //                            });
-    //}
-
+    /**
+     * @constant
+     * @type {string}
+     */
+    var MOUSEDOWN_TOUCHSTART = 'mousedown touchstart';
+    /**
+     * @constant
+     * @type {string}
+     */
+    var MOUSEMOVE_TOUCHMOVE = 'mousemove touchmove';
+    /** @type {!angular.JQLite} */
+    var _handle;
+    /** @type {HTMLElement} */
+    var _sliderElement;
 
     /**
      * @param {!angular.NgModelController} ngModelCtrl_
@@ -136,64 +111,70 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { 
      */
     this.init = function(ngModelCtrl_, element) {
         ngModelCtrl = ngModelCtrl_;
-        ngModelCtrl.$render = this.render;
-
-
-
-        console.info('initial model value: ', ngModelCtrl.$modelValue);
-        console.info('initial view value: ', ngModelCtrl.$viewValue);
+        ngModelCtrl.$render = render;
 
         // Initialise event listeners
-        element = element.find('div');
-        var handle = element.find('span');
+        var sliderElement = element.find('div');
+        _sliderElement = sliderElement[0];
+        _handle = sliderElement.find('span');
 
-        /** @param {Event} event */
-        var setValueFromEvent = function (event) {
-            if (event.type == 'click') {
-                $scope.showToolTip();
-            } else {
-                // Stop accidental text selection while dragging
-                if(event.stopPropagation) event.stopPropagation();
-                if(event.preventDefault) event.preventDefault();
-                event.cancelBubble=true;
-                event.returnValue=false;
-            }
-
-            var value,
-                x = event.clientX, // + handleHalfWidth,
-                left = element[0].offsetLeft,
-                handleHalfWidth = handle[0].offsetWidth / 2,
-                sliderWidth = element[0].offsetWidth;
-
-            if (x <= left) {
-                value = min;
-            } else if (x >= (left + sliderWidth)) {
-                value = max;
-            } else {
-                var dx = x - left; // - handleHalfWidth;
-                value = min + ((dx / sliderWidth) * (max - min));
-            }
-            $scope.setValue(value);
-        };
-
-        var dragStart = $scope.dragStart = function (event) {
-            event.target.parentElement.focus();
-            $scope['isTipOpen'] = true;
-            var window = angular.element($window);
-            window.on('mousemove', setValueFromEvent);
-            window.one('mouseup', function () {
-                $scope['isTipOpen'] = false;
-                window.off('mousemove', setValueFromEvent);
-                handle.one('mousedown', $scope.dragStart);
-            });
-        };
-
-        element.on('click', setValueFromEvent);
-        handle.one('mousedown', dragStart);
+        sliderElement.on('keydown', onKeydown);
+        sliderElement.on('click', setValueFromEvent);
+        _handle.one(MOUSEDOWN_TOUCHSTART, dragStart);
         element.on('$destroy', function() {
             element.off('click', setValueFromEvent);
-            handle.off('mousedown', dragStart);
+            _handle.off(MOUSEDOWN_TOUCHSTART, dragStart);
         });
+    };
+
+    var dragStart = function (event) {
+        event.target.parentElement.focus();
+        $scope['isTipOpen'] = true;
+        var window = angular.element($window);
+        window.on(MOUSEMOVE_TOUCHMOVE, setValueFromEvent);
+        window.one('mouseup touchend', function () {
+            showToolTip(false);
+            window.off(MOUSEMOVE_TOUCHMOVE, setValueFromEvent);
+            _handle.one(MOUSEDOWN_TOUCHSTART, dragStart);
+        });
+    };
+
+    /** @param {Event} event */
+    var setValueFromEvent = function (event) {
+        if (event.type == 'click') {
+            showToolTip(true);
+        } else {
+            // Stop accidental text selection while dragging
+            if(event.stopPropagation) event.stopPropagation();
+            if(event.preventDefault) event.preventDefault();
+            event.cancelBubble=true;
+            event.returnValue=false;
+        }
+
+        var value,
+            x = event.touches ? event.touches[0].clientX : event.clientX,
+            left = _sliderElement.offsetLeft,
+            _handleHalfWidth = _handle[0].offsetWidth / 2,
+            sliderWidth = _sliderElement.offsetWidth;
+
+        if (x <= left) {
+            value = min;
+        } else if (x >= (left + sliderWidth)) {
+            value = max;
+        } else {
+            var dx = x - left; // - _handleHalfWidth;
+            value = min + ((dx / sliderWidth) * (max - min));
+        }
+        setValue(value);
+    };
+
+    var onKeydown = function(event) {
+        if (/(37|38|39|40)/.test(event.which)) {
+            event.preventDefault();
+            event.stopPropagation();
+            setValue( $scope.value + (event.which === 38 || event.which === 39 ? step : -step) );
+            showToolTip(true);
+        }
     };
 
     /**
@@ -203,26 +184,31 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { 
      *  The value referenced by ng-model is changed programmatically and both the $modelValue and the $viewValue are different from last time.
      * @this {angular.NgModelController}
      */
-    this.render = function() {
+    var render = function() {
         if (isNaN(ngModelCtrl.$viewValue) ) {return;}
-        var value = parseFloat(ngModelCtrl.$viewValue, 10);
-        $scope.updateLeft(value);
-        $scope.value = value;
+        var value = parseFloat(this.$viewValue);
+        updateValue(value);
     };
 
     /** @param {number} value */
-    $scope.updateLeft = function(value) {
-        $scope.left = ((value - min)/(max - min)) * 100;
-    };
-
-    /** @param {number} value */
-    $scope.setValue = function(value) {
+    var setValue = function(value) {
         if ( /*!$scope.readonly &&*/ value >= min && value <= max && value != ngModelCtrl.$viewValue ) {
             value = Math.round(value / step) * step;
-            $scope.updateLeft(value);
-            $scope.value = value;
+            updateValue(value);
+            ngModelCtrl.$setViewValue(value);
+        }
+    };
 
-            var label;
+    /**
+     * Updates $scope.value, .left and .hint
+     * @param {number} value
+     */
+    var updateValue = function (value) {
+        $scope.value = value;
+        $scope.left = ((value - min)/(max - min)) * 100;
+
+        if (undefined !== legend) {
+            var label; //, legend = $scope.legend;
             for (var i in legend) {
                 i = parseInt(i);
                 if (i > value) {
@@ -231,50 +217,23 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) { //, debounce) { 
                 label = legend[i];
             }
             $scope['hint'] = label;
-
-            ngModelCtrl.$setViewValue(value);
         }
     };
 
-    //$scope.reset = function() {
-    //    // Not sure why angular-ui-bootstrap doesn't call $rollbackViewValue() - at this point I'll trust their judgement
-    //    $scope.value = ngModelCtrl.$viewValue;
-    //    //this.updateLeft($scope.value);
-    //    //$scope.onLeave();
-    //};
-
-    /** @expose */
-    $scope.onKeydown = function(evt) {
-        if (/(37|38|39|40)/.test(evt.which)) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            console.info(evt.which === 38 || evt.which === 39 ? 'right' : 'left');
-            $scope.setValue( $scope.value + (evt.which === 38 || evt.which === 39 ? step : -step) );
-            $scope.showToolTip();
+    var showToolTip = function(show) {
+        if (show) {
+            $scope['isTipOpen'] = true;
+            showToolTip(false);
+        } else {
+            $timeout(function() {
+                $scope['isTipOpen'] = false;
+            }, 1000);
         }
-    };
-
-    $scope.showToolTip = function() {
-        $scope['isTipOpen'] = true;
-        $timeout(function() {
-            $scope['isTipOpen'] = false;
-        }, 1000);
     };
 };
 
 abc.sliderModule = angular.module('abc.slider', [])
     .controller('SliderController', abc.SliderCtrl)
     .directive('abcSlider', abc.sliderDirectiveFactory)
-    .directive('abcSliderGroup', abc.abcSliderGroupDirectiveFactory)
-    //.directive('abcSliderTip', abc.sliderTipDirective)
-    //.factory('debounce', function($timeout) {
-    //    return function(callback, interval) {
-    //        var timeout = null;
-    //        return function() {
-    //            $timeout.cancel(timeout);
-    //            timeout = $timeout(callback, interval);
-    //        };
-    //    };
-    //});
-;
+    .directive('abcSliderGroup', abc.abcSliderGroupDirectiveFactory);
 
