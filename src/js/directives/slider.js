@@ -24,11 +24,11 @@ abc.sliderDirectiveFactory = function () {
         // =: two-way direct model binding
         // &: method binding
         scope: {
-            min: '@',
-            max: '@',
-            step: '@',
-            tooltip: '@',
-            legend: '&'
+            'min': '@',
+            'max': '@',
+            'step': '@',
+            'tooltip': '@',
+            'legend': '&'
         },
         //templateUrl: abc.sliderTemplateUrl,
         //templateUrl: 'template/slider.html',
@@ -212,7 +212,7 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
         $scope.left = ((value - min)/(max - min)) * 100;
 
         if (undefined !== legend) {
-            var label; //, legend = $scope.legend;
+            var label;
             for (var i in legend) {
                 i = parseInt(i, 10);
                 if (i > value) {
