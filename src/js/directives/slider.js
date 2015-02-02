@@ -90,10 +90,10 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
         max = parseInt($attrs.max, 10) || 100,
         step = parseFloat($attrs.step) || 1;
 
-    ///** @type {angular.Scope} */
-    //this.scope = $scope;
-    /** @type {Object<number, string>} */
-    var legend = $scope['legend']();
+    var legend = $scope['legend'];
+    if (legend) {
+        legend = /** @type {Object<number, string>} */(legend());
+    }
     /**
      * @constant
      * @type {string}
