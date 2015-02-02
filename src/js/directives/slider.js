@@ -93,7 +93,7 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
     ///** @type {angular.Scope} */
     //this.scope = $scope;
     /** @type {Object<number, string>} */
-    var legend = $scope.legend();
+    var legend = $scope['legend']();
     /**
      * @constant
      * @type {string}
