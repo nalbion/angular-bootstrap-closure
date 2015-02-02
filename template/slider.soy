@@ -1,0 +1,20 @@
+{namespace abc.soy}
+
+/**
+ *
+ */
+{template .slider}
+<div class="ui-slider-group">
+    <div class="ui-slider"
+         tabindex="0" role="slider" aria-valuemin="{lb}{lb}min{rb}{rb}"
+         aria-valuemax="{lb}{lb}max{rb}{rb}" aria-valuenow="{lb}{lb}value{rb}{rb}">
+        <div ng-if="tooltip" class="tooltip top fade" ng-class="{lb}in: isTipOpen{rb}"
+             ng-style="{lb}left: left + '%'{rb}">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner" ng-bind="value"></div>
+        </div>
+        <span class="ui-slider-handle" ng-style="{lb}left: left + '%'{rb}"></span>
+    </div>
+    <p class="hint">{lb}{lb}hint{rb}{rb}</p>
+</div>
+{/template}

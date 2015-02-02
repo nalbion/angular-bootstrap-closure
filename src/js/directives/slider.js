@@ -31,18 +31,19 @@ abc.sliderDirectiveFactory = function () {
             legend: '&'
         },
         //templateUrl: abc.sliderTemplateUrl,
-        templateUrl: 'template/slider.html',
+        //templateUrl: 'template/slider.html',
+        template: '<div class="ui-slider-group"><div class="ui-slider" tabindex="0" role="slider" aria-valuemin="{{min}}" aria-valuemax="{{max}}" aria-valuenow="{{value}}"><div ng-if="tooltip" class="tooltip top fade" ng-class="{in: isTipOpen}" ng-style="{left: left + \'%\'}"><div class="tooltip-arrow"></div><div class="tooltip-inner" ng-bind="value"></div></div><span class="ui-slider-handle" ng-style="{left: left + \'%\'}"></span></div><p class="hint">{{hint}}</p></div>',
         link: abc.sliderPostLink         // interact with controllers listed in 'require'
     };
 };
 
-/**
- * @param {!angular.JQLite=} element
- * @param {!angular.Attributes=} attrs
- */
-abc.sliderTemplateUrl = function (element, attrs) {
-    return 'template/slider.html';
-};
+///**
+// * @param {!angular.JQLite=} element
+// * @param {!angular.Attributes=} attrs
+// */
+//abc.sliderTemplateUrl = function (element, attrs) {
+//    return 'template/slider.html';
+//};
 
 /**
  * Attach the data ($scope) to the linking function and it should return the linked html
@@ -59,17 +60,20 @@ abc.sliderPostLink = function (scope, element, attrs, ctrls) {
     ngModelCtrl.$render();
 };
 
-abc.abcSliderGroupDirectiveFactory = function () {
-    return {
-        restrict: 'C',
-        scope: {
-            tooltip: '@',
-            legend: '@'
-        },
-        transclude: true,
-        templateUrl: 'template/slider-group.html'
-    };
-};
+//abc.abcSliderGroupDirectiveFactory = function () {
+//    return {
+//        restrict: 'C',
+//        scope: {
+//            tooltip: '@',
+//            legend: '&'
+//        },
+//        transclude: true,
+//        require: ['abcSliderGroup'],
+//        controller: 'SliderController',
+//        templateUrl: 'template/slider-group.html',
+//        link: abc.sliderPostLink
+//    };
+//};
 
 /**
  *
@@ -185,8 +189,8 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
      * @this {angular.NgModelController}
      */
     var render = function() {
-        if (isNaN(ngModelCtrl.$viewValue) ) {return;}
-        var value = parseFloat(this.$viewValue);
+        //if (isNaN(this.$viewValue) ) { return; }
+        var value = parseFloat(this.$viewValue) || ((min + max) / 2);
         updateValue(value);
     };
 
@@ -234,6 +238,6 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
 
 abc.sliderModule = angular.module('abc.slider', [])
     .controller('SliderController', abc.SliderCtrl)
-    .directive('abcSlider', abc.sliderDirectiveFactory)
-    .directive('abcSliderGroup', abc.abcSliderGroupDirectiveFactory);
+    .directive('abcSlider', abc.sliderDirectiveFactory);
+    //.directive('abcSliderGroup', abc.abcSliderGroupDirectiveFactory);
 

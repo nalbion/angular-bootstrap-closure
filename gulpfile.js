@@ -101,6 +101,12 @@ gulp.task('closure:dev', ['closure:deps', 'closure:compile'], function() {
         .pipe(gulp.dest('.tmp'));
 });
 
+gulp.task('soy', function() {
+   return gulp.src('template/**/*.soy')
+       .pipe($.soy())
+       .pipe(gulp.dest('.tmp/js/soy'));
+});
+
 gulp.task('templates', function() {
     return gulp.src(['template/**/*.html'])
         .pipe(templateCache({
