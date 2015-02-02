@@ -9,23 +9,42 @@
 
     <link rel="stylesheet" href="dist/css/abc.css">
     <style>
+.demo-row {
+    margin: 20px;
+}
+.demo-row label {
+    display: inline-block;
+    font-weight: bold;
+    width: 200px;
+}
 .slider-demo {
+    display: inline-block;
     padding-top: 30px;
 }
     </style>
 </head>
 <body ng-controller="DemoController as demo">
 
-<div class="slider-demo">
-    <input type="range" class="ui-slider weighting" ng-model="demo.sliderVal" max="10"/>
+<div class="demo-row">
+    <label>HTML5 &lt;input type="range"&gt;</label>
+    <div class="slider-demo abc-slider-group" tooltip="true" legend="legend">
+        <input type="range" class="ui-slider weighting" ng-model="demo.sliderVal" max="10"/>
+    </div>
 </div>
 
-<div class="slider-demo">
-    <abc-slider class="weighting" ng-model="demo.sliderVal" max="10"></abc-slider>
+<div class="demo-row">
+    <label>Default &lt;abc-slider&gt; &amp; tooltip</label>
+    <div class="slider-demo">
+        <abc-slider class="weighting" ng-model="demo.sliderVal" tooltip="true" legend="demo.sliderVal"></abc-slider>
+    </div>
 </div>
 
-<div class="slider-demo">
-    <abc-slider class="weighting" ng-init="sliderVal2 = 18" ng-model="sliderVal2" min="5" max="20" step=".5"></abc-slider>
+<div class="demo-row">
+    <label>Customised &lt;abc-slider&gt;</label>
+    <div class="slider-demo">
+        <abc-slider class="weighting" ng-init="sliderVal2 = 18" ng-model="sliderVal2"
+                    min="5" max="20" step=".5" tooltip="true" legend="demo.legend"></abc-slider>
+    </div>
 </div>
 
 <script src="dist/js/vendor.js"></script>
@@ -34,7 +53,13 @@
 <script>
     angular.module('abc').controller('DemoController', function($scope) {
        this.sliderVal = 6;
-       $scope.sliderVal = 2;
+       this.legend = {
+           0: 'terrible',
+           3: 'poor',
+           5: 'satisfactory',
+           8: 'good',
+           10: 'perfect'
+       };
     });
 </script>
 </body>
