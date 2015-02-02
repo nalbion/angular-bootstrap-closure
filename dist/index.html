@@ -7,34 +7,69 @@
     <meta name="description" content="Bootstrap UI components for AngularJS apps using Closure Compiler, no jQuery dependencies">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="css/abc.css">
+    <link rel="stylesheet" href="css/abc-fef187d7.css">
     <style>
+.demo-row {
+    margin: 20px;
+}
+.demo-row label {
+    display: inline-block;
+    font-weight: bold;
+    width: 200px;
+}
 .slider-demo {
+    display: inline-block;
     padding-top: 30px;
 }
     </style>
 </head>
 <body ng-controller="DemoController as demo">
 
-<div class="slider-demo">
-    <input type="range" class="ui-slider weighting" ng-model="demo.sliderVal" max="10"/>
+<!--
+<div class="demo-row">
+    <label>HTML5 &lt;input type="range"&gt;</label>
+    <div class="slider-demo abc-slider-group" tooltip="true" legend="legend">
+        <input type="range" class="ui-slider" ng-model="demo.sliderVal" max="10"/>
+    </div>
+</div>
+-->
+
+<div class="demo-row">
+    <label>Default &lt;abc-slider&gt;: {{demo.sliderVal}}</label>
+    <div class="slider-demo">
+        <abc-slider ng-model="demo.sliderVal"></abc-slider>
+    </div>
 </div>
 
-<div class="slider-demo">
-    <abc-slider class="weighting" ng-model="demo.sliderVal" max="10"></abc-slider>
+<div class="demo-row">
+    <label>Default &lt;abc-slider&gt; &amp; tooltip</label>
+    <div class="slider-demo">
+        <abc-slider ng-model="demo.sliderVal2" tooltip="true"></abc-slider>
+    </div>
 </div>
 
-<div class="slider-demo">
-    <abc-slider class="weighting" ng-init="sliderVal2 = 18" ng-model="sliderVal2" min="5" max="20" step=".5"></abc-slider>
+<div class="demo-row">
+    <label>Customised &lt;abc-slider&gt;</label>
+    <div class="slider-demo">
+        <abc-slider ng-init="sliderVal3 = 18" ng-model="sliderVal3"
+                    min="5" max="20" step=".5" tooltip="true" legend="demo.legend"></abc-slider>
+    </div>
 </div>
 
-<script src="js/vendor.js"></script>
+<script src="js/vendor-29c0042f.js"></script>
 
 <script src="js/abc.js"></script>
 <script>
     angular.module('abc').controller('DemoController', function($scope) {
-       this.sliderVal = 6;
-       $scope.sliderVal = 2;
+       this.sliderVal = 25;
+       this.legend = {
+           5: 'terrible',
+           7: 'poor',
+           10: 'satisfactory',
+           12: 'good',
+           18: 'excellent',
+           20: 'perfect'
+       };
     });
 </script>
 </body>
