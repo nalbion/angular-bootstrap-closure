@@ -9,6 +9,12 @@
     "slider"
   ],
 
+  "homepage": "http://nalbion.github.io/angular-bootstrap-closure",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nalbion/angular-bootstrap-closure.git"
+  },
+
   "ignore": [
     ".gitignore", ".tmp", ".idea", ".jshintrc"
   ],
