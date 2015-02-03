@@ -5,7 +5,7 @@
   "author": "Nicholas Albion",
   "description": "Bootstrap UI components for AngularJS apps using Closure Compiler, no jQuery dependencies",
   "keywords": [
-    "angularjs", "bootstrap", "closure compiler",
+    "angular", "angularjs", "bootstrap", "closure", "closure compiler",
     "slider"
   ],
 
