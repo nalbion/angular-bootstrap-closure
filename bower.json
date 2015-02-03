@@ -16,7 +16,8 @@
   },
 
   "ignore": [
-    ".gitignore", ".tmp", ".idea", ".jshintrc"
+    ".gitignore", ".tmp", ".idea", ".jshintrc",
+    "gulpfile.js", "demo", "dist/abc.js.map", "dist/deps.js", "dist/index.html"
   ],
 
   "dependencies": {
