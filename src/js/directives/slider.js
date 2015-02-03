@@ -3,6 +3,8 @@
  */
 goog.provide('abc.sliderModule');
 
+goog.require('abc.utils');
+
 /**
  * As per the <a href="https://developer.mozilla.org/en/docs/Web/HTML/Element/Input">HTML5 &lt;input type="range"></a>
  * control, defaults to:
@@ -157,7 +159,7 @@ abc.SliderCtrl = function ($scope, $attrs, $window, $timeout) {
 
         var value,
             x = event.touches ? event.touches[0].clientX : event.clientX,
-            left = _sliderElement.offsetLeft,
+            left = abc.utils.offsetX(_sliderElement), //.offsetLeft,
             _handleHalfWidth = _handle[0].offsetWidth / 2,
             sliderWidth = _sliderElement.offsetWidth;
 

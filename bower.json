@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap-closure",
-  "version": "0.0.2",
+  "version": "0.0.3",
 
   "author": "Nicholas Albion",
   "description": "Bootstrap UI components for AngularJS apps using Closure Compiler, no jQuery dependencies",
